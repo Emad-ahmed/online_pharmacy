@@ -1,0 +1,281 @@
+{% extends 'app/base.html' %} <br />
+{% load static %} <br />
+{% block title %}Buy Now{%endblock title %} <br />
+{% block main-content %}
+
+<style>
+  body {
+    background: white;
+  }
+  .container {
+    color: black;
+  }
+
+  .card {
+    max-width: 400px;
+    margin: auto;
+  }
+  .imgview img {
+    width: 10rem;
+    height: 10rem;
+  }
+  .bkashbtn {
+    margin-top: 1rem;
+    background: #e63582;
+    color: white;
+    padding: 7px;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    border-radius: 10px;
+  }
+  .modal-dialog {
+    background: #e63582;
+  }
+  .modal-content {
+    background: #e63582;
+  }
+
+  .bkash-border {
+    background-color: #e63582;
+    width: 28rem;
+    height: 28rem;
+    margin: auto;
+    text-align: center;
+    border-radius: 10px 10px 10px 10px;
+  }
+
+  .sub-border {
+    width: 26rem;
+    position: absolute;
+    margin-top: 4%;
+    margin-left: 4%;
+    height: 10rem;
+    background-color: #e63582;
+    box-shadow: 2px 2px 2px 2px;
+    border-radius: 10px 10px 10px 0px;
+  }
+
+  .sub-border h6 {
+    margin-top: 5%;
+    margin-bottom: 8%;
+    color: white;
+  }
+
+  .my_payment_img {
+    position: absolute;
+    width: 35rem;
+    left: 29%;
+    height: 7rem;
+    object-fit: cover;
+  }
+
+  .bkash-form {
+    margin-top: 8%;
+  }
+
+  .new-input {
+    border-radius: 5px 5px 0px 5px;
+    padding: 4px;
+  }
+
+  .label1 {
+    font-size: 1.2rem;
+    color: white;
+  }
+
+  .form-check-label {
+    color: white;
+  }
+
+  .bbtn {
+    background: #e6a8c1;
+  }
+</style>
+{% if messages %} {% for message in messages %}
+      <p
+        {%
+        if
+        message.tags
+        %}
+        class="alert alert-{{message.tags}} mb-5"
+        {%
+        endif
+        %}
+      >
+        {{message}}
+      </p>
+      {% endfor %} {% endif %}
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-white" id="exampleModalLabel">Bkash</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body mx-0">   {% if form.errors %}
+        <!--error-->
+        {% for field in form %}
+        <!--error-->
+        {% for error in field.errors %}
+        <div class="alert alert-danger">
+          <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %} {% endfor %} {% endif %}
+          <div class="bkash-border">
+            <div class="sub-border">
+              <h6 class="mt-35">Merchant: Medihub</h4>
+                <h6>Invoice no: 01312145432</h4>
+              <h6 class="mt-2"></h4>
+              <h6 class="mt-3 mb-5">Amount: {{total_amount}}</h4>
+              <form action="/addbkash" class="bkash-form" method="POST"  onsubmit="return formValidation()">
+                {% csrf_token %}
+                <label for="phone"  class="mb-2 label1">Your Bkash Account Number</label> <br>
+                <input type="number"  id="phone"  / class="new-input" name="bkashnumber" placeholder="+88">
+        
+                <div class="mb-3 form-check mt-3">
+                  <input type="checkbox" c()
+                  lass="form-check-input" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">I agree the <a href="" class="text-white">terms and condition</a></label>
+                </div>
+        
+               
+        
+                  <button type="submit" class="btn bbtn">PROCEED</button>
+                  <button class="btn bbtn ms-3">Close</button>
+                  
+          
+                <div class="mt-3">
+                    <p class="text-white"><i class="fa fa-phone" aria-hidden="true"></i> 16247</p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-sm-6">
+      <h4>Order Summary</h4>
+      <hr />
+      {% for item in cart_items %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5>Product: <span class="fw-bold">{{item.product.title}}</span></h5>
+          <p>Quantity: {{item.quantity}}</p>
+          <p class="fw-bold">Price : {{item.total_cost}}</p>
+        </div>
+      </div>
+      {% endfor %}
+      <p class="fw-bold">Total Cost + Taka 70 = {{total_amount}}</p>
+      <small
+        ><span class="fw-bold">Term and Condition:</span>
+        <span class="text-dark">
+          Your privacy and that of any other person whose information you
+          provide to us is important to us. Please see our privacy policy for
+          details of what information we collect and how we will use and protect
+          it</span
+        ></small
+      >
+    </div>
+    <div class="col-sm-4 offset-sm-1">
+      <h4>Select Shipping Address</h4>
+      <hr />
+      <form action="/paymentdone">
+        {% for ad in add %}
+        <div class="card">
+          <div class="card-body">
+            <h5>{{ad.name}}</h5>
+            <p>{{ad.locality}}, {{ad.city}}, {{ad.state}} - {{ad.zipcode}}</p>
+          </div>
+        </div>
+        <div class="form-check mt-2 mb-5">
+          <input
+            class="form-check-input"
+            type="radio"
+            value="{{ad.id}}"
+            name="custid"
+            id="custadd{{forloop.counter}}"
+          />
+          <label class="form-check-label fw-bold text-dark" for="">
+            Address: {{forloop.counter}}
+          </label>
+        </div>
+        {% endfor %}
+        <div>
+          <div class="wrap">
+            <a
+              href="#"
+              class="bkashbtn"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              >Bkash Payment</a
+            >
+          </div>
+        </div>
+        <div class="text-end">
+          <button type="submit" class="btn btn-warning mt-3 px-5 fw-bold">
+            Continue
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="mb-4">We accept</h5>
+          <img
+            src="{% static 'app/images/payment.png' %}"
+            alt=""
+            class="img-fluid"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function formValidation() {
+
+    var phone = document.getElementById("phone").value;
+
+
+    var phonePattern = /^(\+88|88)?01[3-9]\d{8}$/;
+
+
+    if (phonePattern.test(phone)) {
+        document.getElementById("merror").innerHTML = "";
+
+    } else {
+        document.getElementById("merror").innerHTML = "**Phone Number Is Invalid**";
+        return false;
+    }
+
+}
+</script>
+{% endblock main-content %}

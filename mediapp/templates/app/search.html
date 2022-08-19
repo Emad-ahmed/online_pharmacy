@@ -1,0 +1,78 @@
+{% extends 'app/base.html' %} <br />
+{% load static %} <br />
+{% block title %}Search{%endblock title %} <br />
+{% block main-content %}
+<link rel="stylesheet" href="{% static 'app/css/home.css' %}" />
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<h1 class="text-center">Found Search Result</h1>
+
+<style>
+  .newhi {
+    background: red;
+    width: 5.5rem;
+    height: 5.5rem;
+    position: absolute;
+    border-radius: 20px 0px 100px 0px;
+    color: white;
+    font-size: 15px;
+    top: 1.7rem;
+  }
+  .title {
+    color: black;
+  }
+
+  .card {
+    height:95%;
+    width:95%;
+  }
+
+  .card img{
+    height:16rem;
+    width:18rem;
+  }
+  .mybtn{
+    display:block;
+    background: #000;
+    position: fixed-bottom;
+    color:white;
+   
+  }
+</style>
+
+<hr />
+{% if product %} <br />
+
+<div class="container">
+  <div class="row m-auto justify-content-center">
+    
+    {% for pro in product %}
+    <div class="col-lg-3" mx-4">
+      <a href="{% url 'product-detail' pro.id %}" class="btn">
+        <div class="card text-center" style="width: 20rem;">
+          <img src="{{pro.product_image.url}}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <h5 class="card-title">{{pro.title}}</h5>
+            <p class="card-text">
+              <h6 class="text-decoration-line-through text-warning">
+                ৳ {{pro.selling_price}}
+              </h6>
+              <h6 class="mt-3 text-danger">৳ {{pro.discounted_price}}</h6>
+            </p>
+            <a href="{% url 'product-detail' pro.id %}" class="btn mybtn">Shop Now</a>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% else %}
+<div style="height: 265px;">
+  <h1 class="text-center text-danger" style="margin-top: 10%">
+    Not Found Anything
+  </h1>
+</div>
+{% endif %} <br />
+
+{% endblock main-content %}
