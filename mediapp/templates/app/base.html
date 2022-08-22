@@ -44,7 +44,7 @@
       width: 5rem;
       height: 5rem;
       top: 430px;
-      z-index: 100;
+      z-index: 1000;
       margin-left: 79rem;
     }
   </style>
@@ -142,8 +142,7 @@
                 <div class="dropdown-content">
                   <a href="{% url 'profile' %}">Profile</a>
                   <div class="dropdown-divider"></div>
-                  <a href="{% url 'venue_pdf' %}">Your Ticket</a>
-                  <div class="dropdown-divider"></div>
+
                   <a href="{% url 'orders' %}">Orders</a>
                   <div class="dropdown-divider"></div>
                   <a href="{% url 'prescription_order' %}"

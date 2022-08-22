@@ -23,7 +23,7 @@ urlpatterns = [
     path('add-to-cart/', views.add_to_cart, name='add-to-cart'),
     path('addproduct/', views.Addproduct.as_view(), name='addproduct'),
     path('doctor/', views.doctor, name='doctor'),
-    path('venue_pdf/', views.venue_pdf, name='venue_pdf'),
+    path('venue_pdf', views.venue_pdf, name='venue_pdf'),
     path('buy/<int:id>', views.buy_now, name='buy'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('address/', views.address, name='address'),
@@ -45,6 +45,7 @@ urlpatterns = [
     path('Prescription/', views.Prescription, name='Prescription'),
     path('add_doctor/', views.DoctorADD.as_view(), name='add_doctor'),
     path('doctor_details/<int:id>/', views.doctor_details, name='doctor_details'),
+    path('delete_ticket/<int:id>/', views.delete_ticket, name='delete_ticket'),
     path('addbkash', views.addbkash, name='addbkash'),
     path('checkout/', views.checkout, name='checkout'),
     path('Healtcare/', views.Healtcare, name='Healtcare'),
@@ -79,6 +80,9 @@ urlpatterns = [
 
     path('registration/', views.CustomerRegistrationView.as_view(),
          name='customerregistration'),
+
+    path('deletecart/<int:id>/', views.deletecart,
+         name='deletecart'),
 
 ] + static(settings.MEDIA_URL,
            document_root=settings.MEDIA_ROOT)

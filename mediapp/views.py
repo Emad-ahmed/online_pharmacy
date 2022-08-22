@@ -24,7 +24,7 @@ import string
 
 import re
 
-regex = '^[a-z]+[0-9]{3,}[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+regex = '^[a-zA-Z0-9_-]{3,}@[a-zA-Z0-9_-]{3,}\.[a-zA-Z]{2,4}$'
 
 
 def check(email):
@@ -33,9 +33,6 @@ def check(email):
         return True
     else:
         return False
-
-# def home(request):
-#  return render(request, 'app/home.html')
 
 
 class ProductView(View):
@@ -309,9 +306,7 @@ def PersonalCare(request):
 
 
 def OTC(request):
-
     otc = Product.objects.filter(category='OM')
-
     if request.user.is_authenticated:
         cart = Cart.objects.filter(user=request.user)
         return render(request, 'app/otc.html', {'otc': otc, 'tcart': cart})
@@ -406,12 +401,12 @@ def addbkash(request,):
         candidate_name = request.user.username
         candidate_phone = request.POST.get("bkashnumber")
         payment_amount = 300
-        n = BkashProductPayment(candidate_name=candidate_name,
-                                candidate_phone=candidate_phone, payment_amount=payment_amount)
-        n.save()
+        bkashsavedatabase = BkashProductPayment(candidate_name=candidate_name,
+                                                candidate_phone=candidate_phone, payment_amount=payment_amount)
+        bkashsavedatabase.save()
         messages.success(
             request, "Successfully Payment Done Now You Can Show Your Ticket")
-        return redirect("/checkout")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
@@ -501,18 +496,27 @@ def doctor_details(request, id, **kwargs):
     print(name)
     doctor_info = DoctorInfo.objects.get(id=id)
     fee = doctor_info.new_patient_fee
+    try:
+        n = BkashPayment.objects.get(candidate_name=request.user.username)
+    except:
+        n = None
     fee = int(fee)
     if request.method == "POST":
         number = request.POST.get("bkashnumber")
         print(number)
         mynumber = int(number)
+
         tikcet_buyer = BkashPayment(
             candidate_name=name, candidate_phone=mynumber, payment_amount=fee)
-        tikcet_buyer.save()
-        messages.success(request, "Buy Ticket Successfully")
+        if not n:
+            tikcet_buyer.save()
+            return redirect('venue_pdf')
+        else:
+            messages.success(request, "You Already Have Ticket")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
     else:
-        return render(request, 'app/doctor_details.html', {'doctorallinfo': doctor_info})
-    return render(request, 'app/doctor_details.html', {'doctorallinfo': doctor_info})
+        return render(request, 'app/doctor_details.html', {'doctorallinfo': doctor_info, 'n': n})
 
 
 def covidinformation(request):
@@ -593,35 +597,30 @@ def Healtcare(request):
 
 
 def venue_pdf(request):
-    name = request.user.username
-    try:
-        n = BkashPayment.objects.get(candidate_name=name)
-    except:
-        n = None
-    if n:
-        buff = io.BytesIO()
-        c = canvas.Canvas(buff, pagesize=letter, bottomup=0)
-        textob = c.beginText()
-        textob.setTextOrigin(inch, inch)
-        textob.setFont("Helvetica", 14)
-        c_name = n.candidate_name
-        phone_number = str(n.candidate_phone)
-        id_no = n.id
 
-        lines = [
-            f"Name: {c_name}", f"Serial Number Is: {str(id_no)}", f"Phone Number Is: {phone_number}"]
+    n = BkashPayment.objects.get(candidate_name=request.user.username)
 
-        for line in lines:
-            textob.textLine(line)
+    buff = io.BytesIO()
+    c = canvas.Canvas(buff, pagesize=letter, bottomup=0)
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont("Helvetica", 14)
+    c_name = n.candidate_name
+    phone_number = str(n.candidate_phone)
+    id_no = n.id
 
-        c.drawText(textob)
-        c.showPage()
-        c.save()
-        buff.seek(0)
+    lines = [
+        f"Name: {c_name}", f"Serial Number Is: {str(id_no)}", f"Phone Number Is: {phone_number}"]
 
-        return FileResponse(buff, as_attachment=True, filename="venue.pdf")
-    else:
-        return redirect("/")
+    for line in lines:
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buff.seek(0)
+
+    return FileResponse(buff, as_attachment=True, filename="venue.pdf")
 
 
 @login_required
@@ -630,3 +629,16 @@ def prescription_order(request):
     if request.user.is_authenticated:
         cart = Cart.objects.filter(user=request.user)
     return render(request, 'app/prescription_order.html', {'order_placed': op, 'tcart': cart})
+
+
+def deletecart(request, id):
+    cart = Cart.objects.get(id=id)
+    cart.delete()
+    messages.warning(request, "delete Cart Successfully")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_ticket(request, id):
+    de = BkashPayment.objects.get(id=id)
+    de.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

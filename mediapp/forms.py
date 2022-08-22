@@ -21,8 +21,8 @@ class CustomerRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
-        labels = {'email': 'Email'}
+        fields = ['username',  'email', 'password1', 'password2']
+
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'})
         }
@@ -30,7 +30,7 @@ class CustomerRegistrationForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     username = UsernameField(widget=forms.TextInput(
-        attrs={'autofocus': True, 'class': 'form-control'}))
+        attrs={'class': 'form-control'}))
     password = forms.CharField(label=_('Password'), strip=False, widget=forms.PasswordInput(
         attrs={'autocomplete': 'current-password', 'class': 'form-control'}))
 

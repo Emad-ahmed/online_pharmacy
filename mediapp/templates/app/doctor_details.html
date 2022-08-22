@@ -101,6 +101,10 @@
       {% endfor %} {% endif %}
 
 <!-- Modal -->
+{% if n %}
+<a href="{% url 'venue_pdf' %}" class="btn btn-sm btn-info ms-5">Show Ticket</a>
+<a href="{% url 'delete_ticket' n.id  %}" class="btn btn-sm btn-danger ms-5 float-left">Delete Ticket</a>
+{% endif %}
 <div
   class="modal fade"
   id="exampleModal"
@@ -194,12 +198,14 @@
         >{{doctorallinfo.serial_number}}
       </p>
       <p>{{doctorallinfo.visiting_hour}}</p>
+      {% if not n %}
       <div class="wrap">
         <a href="#" class="btn" type="button"
       
         data-bs-toggle="modal"
         data-bs-target="#exampleModal">Buy Tickets</a>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>
