@@ -55,33 +55,13 @@ class ProductView(View):
             return render(request, 'app/home.html', {'covid': covid, 'devices': devices, 'herbal': herbal, 'babymom': babymom, 'nudrinks': nudrinks, 'Persoal': Persoal, 'otc': otc, 'pm': pm, "form": fm})
 
     def post(self, request):
-        covid = Product.objects.filter(category='C')
-        devices = Product.objects.filter(category='D')[:4]
-        herbal = Product.objects.filter(category='H')
-        babymom = Product.objects.filter(category='BM')
-        nudrinks = Product.objects.filter(category='ND')
-        Persoal = Product.objects.filter(category='PC')
-        otc = Product.objects.filter(category='OM')
-        pm = Product.objects.filter(category='PM')
-
         fm = UploadPrescriptionForm()
-
         prescription_image = request.FILES['prescription_image']
-
-        fm = UploadPrescription(
-            newuser=request.user,  prescription_image=prescription_image)
+        UploadPrescription(
+            newuser=request.user,  prescription_image=prescription_image).save()
         messages.success(request, "Sucessfully Uploaded Your Prescription")
-        fm.save()
 
-        if request.user.is_authenticated:
-            cart = Cart.objects.filter(user=request.user)
-            return render(request, 'app/home.html', {'covid': covid, 'devices': devices, 'herbal': herbal, 'babymom': babymom, 'nudrinks': nudrinks, 'Persoal': Persoal, 'otc': otc, 'pm': pm, 'tcart': cart, "form": fm})
-        else:
-            return render(request, 'app/home.html', {'covid': covid, 'devices': devices, 'herbal': herbal, 'babymom': babymom, 'nudrinks': nudrinks, 'Persoal': Persoal, 'otc': otc, 'pm': pm, "form": fm})
-
-
-# def product_detail(request):
-#     return render(request, 'app/productdetail.html')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class ProductDetailView(View):
@@ -89,7 +69,6 @@ class ProductDetailView(View):
         product = Product.objects.get(pk=pk)
         item_already_cart = False
         if request.user.is_authenticated:
-
             item_already_cart = Cart.objects.filter(
                 Q(product=product.id) & Q(user=request.user)).exists()
             cart = Cart.objects.filter(user=request.user)
@@ -99,11 +78,10 @@ class ProductDetailView(View):
 
 
 @login_required
-def add_to_cart(request):
+def add_to_cart(request):   
     user = request.user
 
-    product_id = request.GET.get('prod_id')
-
+    product_id = request.GET.get('prod_id')  
     product = Product.objects.get(id=product_id)
     Cart(user=user, product=product).save()
     return redirect('/cart')
