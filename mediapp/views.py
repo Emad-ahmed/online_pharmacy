@@ -22,17 +22,8 @@ from reportlab.lib.pagesizes import letter
 import random
 import string
 
+
 import re
-
-regex = '^[a-zA-Z0-9_-]{3,}@[a-zA-Z0-9_-]{3,}\.[a-zA-Z]{2,4}$'
-
-
-def check(email):
-
-    if(re.search(regex, email)):
-        return True
-    else:
-        return False
 
 
 class ProductView(View):
@@ -78,10 +69,9 @@ class ProductDetailView(View):
 
 
 @login_required
-def add_to_cart(request):   
+def add_to_cart(request):
     user = request.user
-
-    product_id = request.GET.get('prod_id')  
+    product_id = request.GET.get('prod_id')
     product = Product.objects.get(id=product_id)
     Cart(user=user, product=product).save()
     return redirect('/cart')
@@ -93,11 +83,12 @@ def show_cart(request):
         user = request.user
         cart = Cart.objects.filter(user=user)
         amount = 0.0
-        shiping_amount = 70.0
+        shiping_amount = 40
         total_amount = 0.0
-        cart = Cart.objects.filter(user=request.user)
+
         empty_cart = "You Have No Product In Your Cart"
         buy_now = "Buy Now"
+
         cart_product = [p for p in Cart.objects.all() if p.user == user]
         print(cart_product)
         if request.user.is_authenticated:
@@ -121,7 +112,7 @@ def plus_cart(request):
         c.quantity += 1
         c.save()
         amount = 0.0
-        shiping_amount = 70.0
+        shiping_amount = 40.0
 
         cart_product = [p for p in Cart.objects.all() if p.user ==
                         request.user]
@@ -163,33 +154,10 @@ def minus_cart(request):
 
 
 @login_required
-def remove_cart(request):
-    if request.method == "GET":
-        prod_id = request.GET['prod_id']
-        c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
-        c.delete()
-        amount = 0.0
-        shiping_amount = 70.0
-
-        cart_product = [p for p in Cart.objects.all() if p.user ==
-                        request.user]
-        for p in cart_product:
-            tempamount = (p.quantity * p.product.discounted_price)
-            amount += tempamount
-
-        data = {
-
-            'amount': amount,
-            'totalamount': amount + shiping_amount
-        }
-
-        return JsonResponse(data)
-
-
-@login_required
 def buy_now(request, id):
 
     request.session['myproductid'] = id
+
     myproduct = Product.objects.get(id=id)
     price = myproduct.discounted_price
     total_price = price+70
@@ -221,11 +189,10 @@ def orders(request):
 def orders_delete(request, id):
     op = OrderPlaced.objects.filter(id=id)
     op.delete()
-    return redirect("/orders")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def covid(request):
-
     covid = Product.objects.filter(category='C')
 
     if request.user.is_authenticated:
@@ -250,6 +217,7 @@ def Herbal(request):
     if request.user.is_authenticated:
         cart = Cart.objects.filter(user=request.user)
         return render(request, 'app/Herbal.html', {'Herbal': Herbal, 'tcart': cart})
+
     return render(request, 'app/Herbal.html', {'Herbal': Herbal})
 
 
@@ -305,6 +273,16 @@ def Prescription(request):
 #     return render(request, 'app/login.html')
 
 
+regex = '^[a-zA-Z0-9_-]{3,}@[a-zA-Z0-9_-]{3,}\.[a-zA-Z]{2,4}$'
+
+
+def check(email):
+    if(re.search(regex, email)):
+        return True
+    else:
+        return False
+
+
 class CustomerRegistrationView(View):
     def get(self, request):
         form = CustomerRegistrationForm()
@@ -319,11 +297,11 @@ class CustomerRegistrationView(View):
                 form.save()
                 messages.success(
                     request, 'Congratulations!! Registered Successfully')
-            return render(request, 'app/customerregistration.html', {'form': form})
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             messages.warning(
                 request, 'Email Is Invalid')
-            return render(request, 'app/customerregistration.html', {'form': form})
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
@@ -427,10 +405,8 @@ class ProfileView(View):
             reg.save()
             messages.success(
                 request, 'Congratulations Profile Updated Successfully')
-        if request.user.is_authenticated:
-            cart = Cart.objects.filter(user=request.user)
-            return render(request, 'app/profile.html', {'form': form, 'active': 'btn-info', 'tcart': cart})
-        return render(request, 'app/profile.html', {'form': form, 'active': 'btn-info'})
+
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class PasswordChangeView(View):
@@ -452,7 +428,6 @@ class PasswordChangeView(View):
 
 def searchhresult(request):
     search = request.POST.get('search')
-    search = search.lower()
     allpro = Product.objects.filter(
         title=search) or Product.objects.filter(brand=search)
     if request.user.is_authenticated:
@@ -524,6 +499,7 @@ class DoctorADD(View):
         fm = DoctorInfoForm(request.POST, request.FILES)
         if fm.is_valid():
             fm.save()
+            return redirect("doctor")
         return render(request, 'app/doctoradd.html', {'form': fm})
 
 
@@ -555,7 +531,7 @@ class addAmbulanceView(View):
         if fm.is_valid():
             fm.save()
             return redirect("/ambulance")
-        return render(request, 'app/addam.html', {'form': fm})
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def Healtcare(request):
