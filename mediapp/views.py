@@ -409,6 +409,7 @@ class ProfileView(View):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+@method_decorator(login_required, name='dispatch')
 class PasswordChangeView(View):
     def get(self, request):
         form = MyPasswordChangeForm(user=request.user)
@@ -444,9 +445,8 @@ def doctor(request):
     return render(request, 'app/doctor.html', {'doctor_info': doctor_info})
 
 
-def doctor_details(request, id, **kwargs):
+def doctor_details(request, id):
     name = request.user.username
-    print(name)
     doctor_info = DoctorInfo.objects.get(id=id)
     fee = doctor_info.new_patient_fee
     try:
@@ -456,7 +456,7 @@ def doctor_details(request, id, **kwargs):
     fee = int(fee)
     if request.method == "POST":
         number = request.POST.get("bkashnumber")
-        print(number)
+
         mynumber = int(number)
 
         tikcet_buyer = BkashPayment(
@@ -495,7 +495,7 @@ class DoctorADD(View):
         return render(request, 'app/doctoradd.html', {'form': fm})
 
     def post(self, request):
-        print("hi")
+
         fm = DoctorInfoForm(request.POST, request.FILES)
         if fm.is_valid():
             fm.save()
@@ -558,7 +558,7 @@ def venue_pdf(request):
     c = canvas.Canvas(buff, pagesize=letter, bottomup=0)
     textob = c.beginText()
     textob.setTextOrigin(inch, inch)
-    textob.setFont("Helvetica", 14)
+    textob.setFont("Helvetica", 19)
     c_name = n.candidate_name
     phone_number = str(n.candidate_phone)
     id_no = n.id
