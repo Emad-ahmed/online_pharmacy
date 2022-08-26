@@ -47,6 +47,94 @@
       z-index: 1000;
       margin-left: 79rem;
     }
+    section img {
+      max-width: 100%;
+      height: auto;
+    }
+    section {
+      padding: 60px 0;
+      /* min-height: 100vh;*/
+    }
+    section ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .contact-area {
+      border-bottom: 1px solid #353c46;
+    }
+
+    .contact-content p {
+      font-size: 15px;
+      margin: 30px 0 60px;
+      position: relative;
+    }
+
+    .contact-content p::after {
+      background: #353c46;
+      bottom: -30px;
+      content: "";
+      height: 1px;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50%);
+      width: 80%;
+    }
+
+    .contact-content h6 {
+      color: #8b9199;
+      font-size: 15px;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .contact-content span {
+      color: #353c47;
+      margin: 0 10px;
+    }
+
+    .contact-social {
+      margin-top: 30px;
+    }
+
+    .contact-social > ul {
+      display: inline-flex;
+    }
+
+    .contact-social ul li a {
+      border: 1px solid #8b9199;
+      color: #8b9199;
+      display: inline-block;
+      height: 40px;
+      margin: 0 10px;
+      padding-top: 7px;
+      transition: all 0.4s ease 0s;
+      width: 40px;
+    }
+
+    .contact-social ul li a:hover {
+      border: 1px solid #fab702;
+      color: #fab702;
+    }
+
+    .contact-content img {
+      max-width: 210px;
+    }
+
+    section,
+    footer {
+      background: #1a1e25;
+      color: #868c96;
+    }
+
+    footer p {
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    footer img {
+      width: 44px;
+    }
   </style>
 
   <body>
@@ -190,96 +278,54 @@
       rel="stylesheet"
     />
 
-    <footer>
-      <hr class="text-white" />
-      <div class="row-footer">
-        <div class="site-logo">
-          <span>MediHub</span>
-          <ul class="main-nav">
-            <li class="item1">
-              <span>M</span>
-            </li>
-            <li class="item2">
-              <span>E</span>
-            </li>
-            <li class="item3">
-              <span>D</span>
-            </li>
-            <li class="item4">
-              <span>I</span>
-            </li>
-          </ul>
-        </div>
-        <div class="site-links">
-          <span>Link</span>
-          <ul class="list-links">
-            <li><a>Home</a></li>
-            <li><a>Categories</a></li>
-            <li><a>Doctor</a></li>
-            <li><a>Ambulance</a></li>
-          </ul>
-        </div>
-        <div class="adr-email">
-          <span>Address</span>
-          <ul class="">
-            <li class="location">
-              <a><i class="fas fa-map-pin"></i>Sylhet, SYlhet</a>
-            </li>
-            <li class="email">
-              <a href="mailto:nahid123@gmail.com?subject=subject text"
-                >nahid123@gmail.com</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div class="subscribe-form">
-          <input type="email" placeholder="Your E-Mail Address" />
-          <button type="submit">Subscribe</button>
-          <p>I respect your privacy. Unsubscribe at any time.</p>
-        </div>
-      </div>
-
-      <hr class="mainhr" />
-
-      <div class="row-footer">
-        <div class="follow-icons">
-          <li><span>Follow me here</span></li>
-          <li>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          </li>
-          <li>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-          </li>
-          <li>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-          </li>
-          <li>
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-          </li>
-          <li>
-            <a href="#"><i class="fab fa-github"></i></a>
-          </li>
-          <li>
-            <a href="#"><i class="fab fa-stack-overflow"></i></a>
-          </li>
-          <li>
-            <a href="#"><i class="fab fa-codepen"></i></a>
-          </li>
+    <section class="contact-area mt-5" id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 offset-lg-3">
+            <div class="contact-content text-center">
+              <a href="#"
+                ><img
+                  src="{% static 'app/images/banner/large.png' %}"
+                  alt="logo"
+              /></a>
+              <p>This Is A Online Medical Care Based Website</p>
+              <div class="hr"></div>
+              <h6>Sylhet, 3161</h6>
+              <h6>+01722810864<span>|</span>+01302689202</h6>
+              <div class="contact-social">
+                <ul>
+                  <li>
+                    <a class="hover-target" href=""
+                      ><i class="fab fa-facebook-f"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a class="hover-target" href=""
+                      ><i class="fab fa-linkedin-in"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a class="hover-target" href=""
+                      ><i class="fab fa-github"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a class="hover-target" href=""
+                      ><i class="fab fa-behance"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a class="hover-target" href=""
+                      ><i class="fab fa-pinterest-p"></i
+                    ></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="row-footer">
-        <div class="right-dis">
-          Made with
-          <i style="color: red; font-size: 12px" class="fas fa-heart"></i> by
-          <strong>LuStudent</strong>
-        </div>
-        <div class="left-dis">
-          Copyright <strong>Medihub</strong> © 2022. All the rights are
-          reserved.
-        </div>
-      </div>
-    </footer>
+    </section>
 
     <!-- End Footer -->
 
